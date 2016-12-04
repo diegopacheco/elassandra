@@ -145,6 +145,16 @@
             <id>elassandra-releases</id>
             <url>http://maven.strapdata.com/releases</url>
             <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>elasticsearch-releases</id>
+            <url>http://maven.elasticsearch.org/releases</url>
+            <releases>
                 <enabled>false</enabled>
             </releases>
             <snapshots>
@@ -187,7 +197,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.elasticsearch</groupId>
+                <groupId>com.strapdata</groupId>
                 <artifactId>dev-tools</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
