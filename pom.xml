@@ -898,8 +898,8 @@
                     <version>1.5</version>
                     <configuration>
                         <resourceBundles>
-                            <resourceBundle>com.strapdata:dev-tools:2.4.2-SNAPSHOT</resourceBundle>
-                            <resourceBundle>com.strapdata:rest-api-spec:2.4.2-SNAPSHOT</resourceBundle>
+                            <resourceBundle>com.strapdata:dev-tools:${elasticsearch.version}</resourceBundle>
+                            <resourceBundle>com.strapdata:rest-api-spec:${elasticsearch.version}</resourceBundle>
                         </resourceBundles>
                         <outputDirectory>${elasticsearch.tools.directory}</outputDirectory>
                         <attachToMain>false</attachToMain>
