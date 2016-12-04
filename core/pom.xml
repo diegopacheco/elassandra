@@ -609,11 +609,11 @@
 
         <!-- Fix Cassandra bytecode to make it Locale-independent -->
         <plugin>
-            <groupId>nl.topicus.plugins</groupId>
+            <groupId>com.strapdata</groupId>
             <artifactId>javassist-maven-plugin</artifactId>
-            <version>2.1</version>
+            <version>2.3</version>
             <configuration>
-                <transformerClass>nl.topicus.plugins.maven.javassist.StringLocaleTransformer</transformerClass>
+                <transformerClass>org.elassandra.transformer.StringLocaleTransformer</transformerClass>
                 <processInclusions>
                     <inclusion>org.apache.cassandra.auth</inclusion>
                     <inclusion>org.apache.cassandra.cache</inclusion>

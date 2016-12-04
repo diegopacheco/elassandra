@@ -14,13 +14,6 @@
     <version>2.3</version>
     <name>Javassist Maven: Parent POM</name>
 
-    <url>https://github.com/strapdata/javassist-maven</url>
-    <scm>
-        <url>git://github.com/strapdata/javassist-maven.git</url>
-        <connection>scm:git:git://github.com/strapdata/javassist-maven.git</connection>
-        <developerConnection>scm:git:git@github.com:strapdata/javassist-maven.git</developerConnection>
-    </scm>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javassist.version>3.20.0-GA</javassist.version>
