@@ -18,5 +18,5 @@ before_install:
   - mvn -f javassist-maven/pom.xml install 
 
 install: 
-  -mvn -f core/pom.xml install -DskipTests
-  -mvn package 
+  - mvn -f core/pom.xml install -DskipTests
+  - mvn package 
