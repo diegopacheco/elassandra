@@ -649,7 +649,7 @@
                     <version>3.5.1</version>
                     <configuration>
                         <compilerVersion>1.8</compilerVersion>
-                        <fork>false</fork>
+                        <fork>true</fork>
                         <maxmem>2048m</maxmem>
                         <!-- REMOVE WHEN UPGRADE:
                              see https://jira.codehaus.org/browse/MCOMPILER-209 it's a bug where
@@ -657,10 +657,11 @@
                              recompilation of the entire codebase each time without any changes. Should
                              be fixed in version > 3.1
                          -->
-                        <useIncrementalCompilation>false</useIncrementalCompilation>
+                        <useIncrementalCompilation>true</useIncrementalCompilation>
                         <compilerArgs>
                             <arg>-XDignore.symbol.file</arg>
                         </compilerArgs>
+                        <verbose>true</verbose>
                     </configuration>
                 </plugin>
                 <plugin>
