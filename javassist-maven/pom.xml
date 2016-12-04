@@ -104,6 +104,21 @@
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <pluginManagement>
             <plugins>
+                 <plugin>
+                    <groupId>de.thetaphi</groupId>
+                    <artifactId>forbiddenapis</artifactId>
+                    <version>2.0</version>
+                    <executions>
+                        <execution>
+                            <id>check-forbidden-apis</id>
+                             <phase>none</phase>
+                         </execution>
+                         <execution>
+                             <id>check-forbidden-test-apis</id>
+                             <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
