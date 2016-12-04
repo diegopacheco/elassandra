@@ -13,5 +13,7 @@ notifications:
 
 before_install:
   - ulimit -u 65535
+  - mvn -f dev-tools/pom.xml install 
+  - mvn -f rest-api-spec/pom.xml install 
 
 install: mvn package -DskipTests
