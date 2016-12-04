@@ -23,13 +23,13 @@
         <packaging.module.list>lang-groovy|lang-expression|reindex</packaging.module.list>
 
         <!-- Properties used for building RPM & DEB packages (see common/packaging.properties) -->
-        <packaging.elasticsearch.home.dir>/usr/share/elasticsearch</packaging.elasticsearch.home.dir>
-        <packaging.elasticsearch.bin.dir>/usr/share/elasticsearch/bin</packaging.elasticsearch.bin.dir>
-        <packaging.elasticsearch.conf.dir>/etc/elasticsearch</packaging.elasticsearch.conf.dir>
-        <packaging.elasticsearch.data.dir>/var/lib/elasticsearch</packaging.elasticsearch.data.dir>
-        <packaging.elasticsearch.user>elasticsearch</packaging.elasticsearch.user>
-        <packaging.elasticsearch.group>elasticsearch</packaging.elasticsearch.group>
-        <packaging.elasticsearch.log.dir>/var/log/elasticsearch</packaging.elasticsearch.log.dir>
+        <packaging.elasticsearch.home.dir>/usr/share/cassandra</packaging.elasticsearch.home.dir>
+        <packaging.elasticsearch.bin.dir>/usr/share/cassandra/bin</packaging.elasticsearch.bin.dir>
+        <packaging.elasticsearch.conf.dir>/etc/cassandra</packaging.elasticsearch.conf.dir>
+        <packaging.elasticsearch.data.dir>/var/lib/cassandra</packaging.elasticsearch.data.dir>
+        <packaging.elasticsearch.user>cassandra</packaging.elasticsearch.user>
+        <packaging.elasticsearch.group>cassandra</packaging.elasticsearch.group>
+        <packaging.elasticsearch.log.dir>/var/log/cassandra</packaging.elasticsearch.log.dir>
         <packaging.elasticsearch.plugins.dir>${packaging.elasticsearch.home.dir}/plugins</packaging.elasticsearch.plugins.dir>
         <packaging.elasticsearch.pid.dir>/var/run/elasticsearch</packaging.elasticsearch.pid.dir>
         <packaging.elasticsearch.systemd.dir>/usr/lib/systemd/system</packaging.elasticsearch.systemd.dir>
@@ -94,7 +94,6 @@
             <artifactId>elassandra</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
-            <version>${elasticsearch.version}</version>
         </dependency>
 
         <dependency>
@@ -107,7 +106,6 @@
         <dependency>
             <groupId>com.strapdata</groupId>
             <artifactId>elassandra</artifactId>
-            <version>${elasticsearch.version}</version>
         </dependency>
 
         <dependency>

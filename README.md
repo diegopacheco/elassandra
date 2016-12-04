@@ -57,6 +57,10 @@ For Elasticsearch users, elassandra provides useful features :
 
 Contributors are welcome to test and enhance Elassandra.
 
+# Limitation
+
+* Bulk operation not yet implemented (coming soon).
+
 # License
 
 ```

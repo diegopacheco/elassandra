@@ -83,8 +83,8 @@
                                     <directory>${project.basedir}/../src/main/resources</directory>
                                     <filtering>true</filtering>
                                     <includes>
-                                        <include>bin/elasticsearch</include>
-                                        <include>bin/elasticsearch.in.sh</include>
+                                        <include>bin/cassandra</include>
+                                        <include>bin/cassandra.in.sh</include>
                                         <include>bin/plugin</include>
                                         <include>bin/elasticsearch-systemd-pre-exec</include>
                                     </includes>
@@ -140,7 +140,7 @@
                                         <type>perm</type>
                                         <filemode>750</filemode>
                                         <user>root</user>
-                                        <group>elasticsearch</group>
+                                        <group>cassandra</group>
                                     </mapper>
                                 </data>
                                 <!-- Add configuration files -->
@@ -153,7 +153,7 @@
                                         <prefix>${packaging.elasticsearch.conf.dir}</prefix>
                                         <filemode>750</filemode>
                                         <user>root</user>
-                                        <group>elasticsearch</group>
+                                        <group>cassandra</group>
                                     </mapper>
                                 </data>
                                 <data>
@@ -165,7 +165,7 @@
                                         <type>perm</type>
                                         <filemode>750</filemode>
                                         <user>root</user>
-                                        <group>elasticsearch</group>
+                                        <group>cassandra</group>
                                     </mapper>
                                 </data>
                                 <!-- Add environment vars file -->

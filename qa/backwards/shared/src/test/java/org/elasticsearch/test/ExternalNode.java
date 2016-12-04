@@ -119,7 +119,7 @@ final class ExternalNode implements Closeable {
             case "node.local":
             case "path.shared_data":
             case TransportModule.TRANSPORT_TYPE_KEY:
-            case DiscoveryModule.DISCOVERY_TYPE_KEY:
+            //case DiscoveryModule.DISCOVERY_TYPE_KEY:
             case TransportModule.TRANSPORT_SERVICE_TYPE_KEY:
             case InternalSettingsPreparer.IGNORE_SYSTEM_PROPERTIES_SETTING:
                 logger.warn("Suppressing setting for external node [{}={}]", entry.getKey(), entry.getValue());
@@ -143,10 +143,11 @@ final class ExternalNode implements Closeable {
                                 new Object[] { tcpPortSetting }));
             }
         }
+        /*
         if (externalNodeSettings.get(UnicastZenPing.DISCOVERY_ZEN_PING_UNICAST_HOSTS) == null) {
             throw new IllegalArgumentException("Without unicast hosts the external cluster isn't likely to work!");
         }
-
+        */
 
 
         boolean success = false;

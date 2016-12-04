@@ -14,4 +14,4 @@ notifications:
 before_install:
   - ulimit -u 65535
 
-script: mvn compile
+script: mvn package -DskipTests

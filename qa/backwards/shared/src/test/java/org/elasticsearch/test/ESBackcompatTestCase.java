@@ -260,7 +260,7 @@ public abstract class ESBackcompatTestCase extends ESIntegTestCase {
         Settings.Builder builder = Settings.builder().put(requiredSettings());
         builder.put(TransportModule.TRANSPORT_TYPE_KEY, "netty"); // run same transport  / disco as external
         builder.put("node.mode", "network");
-        builder.put(UnicastZenPing.DISCOVERY_ZEN_PING_UNICAST_HOSTS, backwardsCluster().unicastHosts());
+       // builder.put(UnicastZenPing.DISCOVERY_ZEN_PING_UNICAST_HOSTS, backwardsCluster().unicastHosts());
         return builder.build();
     }
 

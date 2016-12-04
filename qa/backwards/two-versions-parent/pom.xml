@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>com.strapdata.distribution.tar</groupId>
-            <artifactId>elasssandra</artifactId>
+            <artifactId>elassandra</artifactId>
             <version>${project.version}</version>
             <type>tar.gz</type>
         </dependency>
