@@ -13,10 +13,6 @@ notifications:
 
 before_install:
   - ulimit -u 65535
-  - mvn -f dev-tools/pom.xml install 
-  - mvn -f rest-api-spec/pom.xml install 
   - mvn -f javassist-maven/pom.xml install 
 
-install: 
-  - mvn -f core/pom.xml install -DskipTests
-  - mvn package 
+install: mvn package 
