@@ -186,12 +186,13 @@
 
     <dependencyManagement>
         <dependencies>
+        <!--
             <dependency>
                 <groupId>com.strapdata</groupId>
                 <artifactId>dev-tools</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
-
+        -->
             <dependency>
                 <groupId>com.carrotsearch.randomizedtesting</groupId>
                 <artifactId>randomizedtesting-runner</artifactId>
@@ -898,8 +899,8 @@
                     <version>1.5</version>
                     <configuration>
                         <resourceBundles>
-                            <resourceBundle>com.strapdata:dev-tools:${elasticsearch.version}</resourceBundle>
-                            <resourceBundle>com.strapdata:rest-api-spec:${elasticsearch.version}</resourceBundle>
+                            <resourceBundle>com.strapdata:dev-tools:2.4.2-rc1-SNAPSHOT</resourceBundle>
+                            <resourceBundle>com.strapdata:rest-api-spec:2.4.2-rc1-SNAPSHOT</resourceBundle>
                         </resourceBundles>
                         <outputDirectory>${elasticsearch.tools.directory}</outputDirectory>
                         <attachToMain>false</attachToMain>
@@ -913,7 +914,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                
+               
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -1612,6 +1613,7 @@ org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UT
         </profile>
     </profiles>
     <modules>
+        <module>javassist-maven</module>
         <module>dev-tools</module>
         <module>rest-api-spec</module>
         <module>core</module>
