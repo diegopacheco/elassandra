@@ -901,7 +901,6 @@
                         <resourceBundles>
                             <resourceBundle>com.strapdata:dev-tools:2.4.2-rc1-SNAPSHOT</resourceBundle>
                             <resourceBundle>com.strapdata:rest-api-spec:2.4.2-rc1-SNAPSHOT</resourceBundle>
-                            <resourceBundle>com.strapdata:javassist-maven:2.3</resourceBundle>
                         </resourceBundles>
                         <outputDirectory>${elasticsearch.tools.directory}</outputDirectory>
                         <attachToMain>false</attachToMain>
