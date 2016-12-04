@@ -430,7 +430,7 @@
             <systemPath>${project.basedir}/cassandra/lib/cassandra-driver-core-2.2.0-rc2-SNAPSHOT-20150617-shaded.jar</systemPath>
         </dependency>
         
-        
+<!--
         <dependency>
             <groupId>com.strapdata</groupId>
             <artifactId>javassist-maven-plugin</artifactId>
@@ -443,6 +443,7 @@
             <version>2.3</version>
             <optional>true</optional>
         </dependency>
+-->
         
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
