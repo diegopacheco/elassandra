@@ -46,6 +46,11 @@ import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 import com.google.common.io.ByteStreams;
 
+/**
+ * Configurator for JUNIT tests.
+ * @author vroyer
+ *
+ */
 public class YamlTestConfigurationLoader extends YamlConfigurationLoader
 {
     private static final Logger logger = LoggerFactory.getLogger(YamlTestConfigurationLoader.class);

@@ -59,7 +59,6 @@ import org.elasticsearch.cluster.node.DiscoveryNode.DiscoveryNodeStatus;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
 import org.elasticsearch.cluster.routing.IndexRoutingTable;
 import org.elasticsearch.cluster.routing.IndexShardRoutingTable;
-import org.elasticsearch.cluster.routing.RoutingTable;
 import org.elasticsearch.cluster.routing.ShardRouting;
 import org.elasticsearch.cluster.routing.ShardRoutingState;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
@@ -67,6 +66,7 @@ import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.internal.Nullable;
 import org.elasticsearch.common.network.NetworkAddress;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.SettingsException;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.util.concurrent.ConcurrentCollections;
@@ -292,11 +292,19 @@ public class CassandraDiscovery extends AbstractLifecycleComponent<Discovery> im
                 }
             }
         }
-
     }
 
     private int publishPort() {
-        return settings.getAsInt("transport.netty.publish_port", settings.getAsInt("transport.publish_port",settings.getAsInt("transport.tcp.port", 9300)));
+        try {
+            return settings.getAsInt("transport.netty.publish_port", settings.getAsInt("transport.publish_port",settings.getAsInt("transport.tcp.port", 9300)));
+        } catch (SettingsException | NumberFormatException e) {
+            String publishPort = settings.get("transport.netty.publish_port", settings.get("transport.publish_port",settings.get("transport.tcp.port", "9300")));
+            if (publishPort.indexOf("-") >0 ) {
+                return Integer.parseInt(publishPort.split("-")[0]);
+            } else {
+                throw e;
+            }
+        }
     }
     
     public void updateNode(InetAddress addr, EndpointState state) {
