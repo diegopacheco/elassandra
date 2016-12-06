@@ -127,6 +127,9 @@ import org.elasticsearch.action.admin.indices.warmer.get.GetWarmersAction;
 import org.elasticsearch.action.admin.indices.warmer.get.TransportGetWarmersAction;
 import org.elasticsearch.action.admin.indices.warmer.put.PutWarmerAction;
 import org.elasticsearch.action.admin.indices.warmer.put.TransportPutWarmerAction;
+import org.elasticsearch.action.bulk.BulkAction;
+import org.elasticsearch.action.bulk.TransportXBulkAction;
+import org.elasticsearch.action.bulk.TransportXShardBulkAction;
 import org.elasticsearch.action.delete.DeleteAction;
 import org.elasticsearch.action.delete.TransportXDeleteAction;
 import org.elasticsearch.action.exists.ExistsAction;
@@ -251,10 +254,12 @@ public class ActionModule extends AbstractModule {
 //        registerAction(ClusterRerouteAction.INSTANCE, TransportClusterRerouteAction.class);
         registerAction(ClusterSearchShardsAction.INSTANCE, TransportClusterSearchShardsAction.class);
         registerAction(PendingClusterTasksAction.INSTANCE, TransportPendingClusterTasksAction.class);
+        /*
         registerAction(PutRepositoryAction.INSTANCE, TransportPutRepositoryAction.class);
         registerAction(GetRepositoriesAction.INSTANCE, TransportGetRepositoriesAction.class);
         registerAction(DeleteRepositoryAction.INSTANCE, TransportDeleteRepositoryAction.class);
         registerAction(VerifyRepositoryAction.INSTANCE, TransportVerifyRepositoryAction.class);
+        */
         //registerAction(GetSnapshotsAction.INSTANCE, TransportGetSnapshotsAction.class);
         //registerAction(DeleteSnapshotAction.INSTANCE, TransportDeleteSnapshotAction.class);
         //registerAction(CreateSnapshotAction.INSTANCE, TransportCreateSnapshotAction.class);
@@ -308,7 +313,7 @@ public class ActionModule extends AbstractModule {
         registerAction(UpdateAction.INSTANCE, TransportXUpdateAction.class);
         registerAction(MultiGetAction.INSTANCE, TransportMultiGetAction.class,
                 TransportShardMultiGetAction.class);
-        //registerAction(BulkAction.INSTANCE, TransportXBulkAction.class, TransportXShardBulkAction.class);
+        registerAction(BulkAction.INSTANCE, TransportXBulkAction.class, TransportXShardBulkAction.class);
         registerAction(SearchAction.INSTANCE, TransportSearchAction.class);
         registerAction(SearchScrollAction.INSTANCE, TransportSearchScrollAction.class);
         registerAction(MultiSearchAction.INSTANCE, TransportMultiSearchAction.class);

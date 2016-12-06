@@ -150,10 +150,12 @@ public class RestActionModule extends AbstractModule {
 //        bind(RestClusterRerouteAction.class).asEagerSingleton();
         bind(RestClusterSearchShardsAction.class).asEagerSingleton();
         bind(RestPendingClusterTasksAction.class).asEagerSingleton();
+        /*
         bind(RestPutRepositoryAction.class).asEagerSingleton();
         bind(RestGetRepositoriesAction.class).asEagerSingleton();
         bind(RestDeleteRepositoryAction.class).asEagerSingleton();
         bind(RestVerifyRepositoryAction.class).asEagerSingleton();
+        */
         //bind(RestGetSnapshotsAction.class).asEagerSingleton();
         //bind(RestCreateSnapshotAction.class).asEagerSingleton();
         //bind(RestRestoreSnapshotAction.class).asEagerSingleton();

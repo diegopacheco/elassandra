@@ -67,13 +67,13 @@ import java.util.Map;
  */
 public class TransportShardBulkAction extends TransportReplicationAction<BulkShardRequest, BulkShardRequest, BulkShardResponse> {
 
-    private final static String OP_TYPE_UPDATE = "update";
-    private final static String OP_TYPE_DELETE = "delete";
+    protected final static String OP_TYPE_UPDATE = "update";
+    protected final static String OP_TYPE_DELETE = "delete";
 
     public static final String ACTION_NAME = BulkAction.NAME + "[s]";
 
-    private final UpdateHelper updateHelper;
-    private final boolean allowIdGeneration;
+    protected final UpdateHelper updateHelper;
+    protected final boolean allowIdGeneration;
 
     @Inject
     public TransportShardBulkAction(Settings settings, TransportService transportService, ClusterService clusterService,
@@ -309,7 +309,7 @@ public class TransportShardBulkAction extends TransportReplicationAction<BulkSha
         }
     }
 
-    private WriteResult<IndexResponse> shardIndexOperation(BulkShardRequest request, IndexRequest indexRequest, MetaData metaData,
+    protected WriteResult<IndexResponse> shardIndexOperation(BulkShardRequest request, IndexRequest indexRequest, MetaData metaData,
                                             IndexShard indexShard, boolean processed) throws Throwable {
 
         // validate, if routing is required, that we got routing
@@ -380,7 +380,7 @@ public class TransportShardBulkAction extends TransportReplicationAction<BulkSha
 
     }
 
-    private UpdateResult shardUpdateOperation(MetaData metaData, BulkShardRequest bulkShardRequest, UpdateRequest updateRequest, IndexShard indexShard) {
+    protected UpdateResult shardUpdateOperation(MetaData metaData, BulkShardRequest bulkShardRequest, UpdateRequest updateRequest, IndexShard indexShard) {
         UpdateHelper.Result translate = updateHelper.prepare(updateRequest, indexShard);
         switch (translate.operation()) {
             case UPSERT:
@@ -481,8 +481,8 @@ public class TransportShardBulkAction extends TransportReplicationAction<BulkSha
          * the translog is like a tape where only the highest location needs to be fsynced
          * in order to sync all previous locations even though they are not in the same file.
          * When the translog rolls over files the previous file is fsynced on after closing if needed.*/
-        assert next != null : "next operation can't be null";
-        assert current == null || current.compareTo(next) < 0 : "translog locations are not increasing";
+        //assert next != null : "next operation can't be null";
+        //assert current == null || current.compareTo(next) < 0 : "translog locations are not increasing";
         return next;
     }
 }
