@@ -31,7 +31,7 @@ import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BulkScorer;
 import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.LRUQueryCache;
+import org.apache.lucene.search.XLRUQueryCache;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryCache;
 import org.apache.lucene.search.QueryCachingPolicy;
@@ -53,7 +53,7 @@ public class IndicesQueryCache extends AbstractComponent implements QueryCache, 
     public static final String DEPRECATED_INDICES_CACHE_QUERY_SIZE = "indices.cache.filter.size";
     public static final String INDICES_CACHE_QUERY_COUNT = "indices.queries.cache.count";
 
-    private final LRUQueryCache cache;
+    private final XLRUQueryCache cache;
     private final ShardCoreKeyMap shardKeyMap = new ShardCoreKeyMap();
     private final Map<ShardId, Stats> shardStats = new ConcurrentHashMap<>();
     private volatile long sharedRamBytesUsed;
@@ -81,7 +81,7 @@ public class IndicesQueryCache extends AbstractComponent implements QueryCache, 
         final int count = settings.getAsInt(INDICES_CACHE_QUERY_COUNT, 1000);
         logger.debug("using [node] query cache with size [{}], actual_size [{}], max filter count [{}]",
                 sizeString, size, count);
-        cache = new LRUQueryCache(count, size.bytes()) {
+        cache = new XLRUQueryCache(count, size.bytes()) {
 
             private Stats getStats(Object coreKey) {
                 final ShardId shardId = shardKeyMap.getShardId(coreKey);
