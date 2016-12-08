@@ -18,7 +18,14 @@
 package org.apache.cassandra.db.marshal;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.cassandra.cql3.Json;
 import org.apache.cassandra.cql3.Sets;
@@ -28,13 +35,12 @@ import org.apache.cassandra.exceptions.ConfigurationException;
 import org.apache.cassandra.exceptions.SyntaxException;
 import org.apache.cassandra.serializers.MarshalException;
 import org.apache.cassandra.serializers.SetSerializer;
-import org.apache.cassandra.transport.Server;
 
 public class SetType<T> extends CollectionType<Set<T>>
 {
     // interning instances
-    private static final Map<AbstractType<?>, SetType> instances = new HashMap<>();
-    private static final Map<AbstractType<?>, SetType> frozenInstances = new HashMap<>();
+    private static final ConcurrentMap<AbstractType<?>, SetType> instances = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<AbstractType<?>, SetType> frozenInstances = new ConcurrentHashMap<>();
 
     private final AbstractType<T> elements;
     private final SetSerializer<T> serializer;
@@ -51,12 +57,13 @@ public class SetType<T> extends CollectionType<Set<T>>
 
     public static synchronized <T> SetType<T> getInstance(AbstractType<T> elements, boolean isMultiCell)
     {
-        Map<AbstractType<?>, SetType> internMap = isMultiCell ? instances : frozenInstances;
+        ConcurrentMap<AbstractType<?>, SetType> internMap = isMultiCell ? instances : frozenInstances;
         SetType<T> t = internMap.get(elements);
         if (t == null)
         {
             t = new SetType<T>(elements, isMultiCell);
-            internMap.put(elements, t);
+            SetType<T> t2 = internMap.putIfAbsent(elements, t);
+            t = (t2 == null) ? t : t2;
         }
         return t;
     }

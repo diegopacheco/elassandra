@@ -18,7 +18,13 @@
 package org.apache.cassandra.db.marshal;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import org.apache.cassandra.cql3.Json;
 import org.apache.cassandra.cql3.Lists;
@@ -27,10 +33,8 @@ import org.apache.cassandra.db.Cell;
 import org.apache.cassandra.exceptions.ConfigurationException;
 import org.apache.cassandra.exceptions.SyntaxException;
 import org.apache.cassandra.serializers.CollectionSerializer;
-import org.apache.cassandra.serializers.MarshalException;
 import org.apache.cassandra.serializers.ListSerializer;
-
-import org.apache.cassandra.transport.Server;
+import org.apache.cassandra.serializers.MarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +43,8 @@ public class ListType<T> extends CollectionType<List<T>>
     private static final Logger logger = LoggerFactory.getLogger(ListType.class);
 
     // interning instances
-    private static final Map<AbstractType<?>, ListType> instances = new HashMap<>();
-    private static final Map<AbstractType<?>, ListType> frozenInstances = new HashMap<>();
+    private static final ConcurrentMap<AbstractType<?>, ListType> instances = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<AbstractType<?>, ListType> frozenInstances = new ConcurrentHashMap<>();
 
     private final AbstractType<T> elements;
     public final ListSerializer<T> serializer;
@@ -54,15 +58,18 @@ public class ListType<T> extends CollectionType<List<T>>
 
         return getInstance(l.get(0), true);
     }
+    
 
-    public static synchronized <T> ListType<T> getInstance(AbstractType<T> elements, boolean isMultiCell)
+    
+    public static  <T> ListType<T> getInstance(AbstractType<T> elements, final Boolean isMultiCell)
     {
-        Map<AbstractType<?>, ListType> internMap = isMultiCell ? instances : frozenInstances;
+        ConcurrentMap<AbstractType<?>, ListType> internMap = isMultiCell ? instances : frozenInstances;
         ListType<T> t = internMap.get(elements);
         if (t == null)
         {
             t = new ListType<T>(elements, isMultiCell);
-            internMap.put(elements, t);
+            ListType<T> t2 = internMap.putIfAbsent(elements, t);
+            t = (t2 == null) ? t : t2;
         }
         return t;
     }
