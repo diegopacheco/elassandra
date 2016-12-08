@@ -657,13 +657,19 @@ public class XLRUQueryCache implements QueryCache, Accountable {
 
     @Override
     public BulkScorer bulkScorer(LeafReaderContext context) throws IOException {
+      /* disable usage stats for non-cachable query
       if (used.compareAndSet(false, true)) {
         policy.onUse(getQuery());
       }
+      */
       
       // check the cache for cachable object only to avoid locking on get().
       DocIdSet docIdSet;
       if (shouldCache(context)) {
+          if (used.compareAndSet(false, true)) {
+              policy.onUse(getQuery());
+          }
+          
           docIdSet = get(in.getQuery(), context);
           if (docIdSet == null) {
               docIdSet = cache(context);
