@@ -51,7 +51,7 @@ public final class ShardCoreKeyMap {
     private final Multimap<String, Object> indexToCoreKey;
 
     public ShardCoreKeyMap() {
-        coreKeyToShard = Collections.synchronizedMap(new IdentityHashMap<>());
+        coreKeyToShard = new IdentityHashMap<>();
         indexToCoreKey = HashMultimap.create();
     }
 
@@ -66,36 +66,39 @@ public final class ShardCoreKeyMap {
         }
         final Object coreKey = reader.getCoreCacheKey();
         final String index = shardId.getIndex();
-        // coreKeyToShard is synchronized...
         //synchronized (this) {
-            if (coreKeyToShard.put(coreKey, shardId) == null) {
-                final boolean added = indexToCoreKey.put(index, coreKey);
-                assert added;
-                CoreClosedListener listener = new CoreClosedListener() {
-                    @Override
-                    public void onClose(Object ownerCoreCacheKey) throws IOException {
-                        assert coreKey == ownerCoreCacheKey;
-                        synchronized (ShardCoreKeyMap.this) {
-                            coreKeyToShard.remove(ownerCoreCacheKey);
-                            indexToCoreKey.remove(index, coreKey);
+        if (coreKeyToShard.get(coreKey) == null) {
+            synchronized(coreKey) {
+                coreKeyToShard.computeIfAbsent(coreKey, K -> {
+                    final boolean added = indexToCoreKey.put(index, K);
+                    assert added;
+                    CoreClosedListener listener = new CoreClosedListener() {
+                        @Override
+                        public void onClose(Object ownerCoreCacheKey) throws IOException {
+                            assert K == ownerCoreCacheKey;
+                            synchronized (ShardCoreKeyMap.this) {
+                                coreKeyToShard.remove(ownerCoreCacheKey);
+                                indexToCoreKey.remove(index, K);
+                            }
+                        }
+                    };
+                    boolean addedListener = false;
+                    try {
+                        reader.addCoreClosedListener(listener);
+                        addedListener = true;
+                    } finally {
+                        if (false == addedListener) {
+                            try {
+                                listener.onClose(K);
+                            } catch (IOException e) {
+                                throw new RuntimeException("Blow up trying to recover from failure to add listener", e);
+                            }
                         }
                     }
-                };
-                boolean addedListener = false;
-                try {
-                    reader.addCoreClosedListener(listener);
-                    addedListener = true;
-                } finally {
-                    if (false == addedListener) {
-                        try {
-                            listener.onClose(coreKey);
-                        } catch (IOException e) {
-                            throw new RuntimeException("Blow up trying to recover from failure to add listener", e);
-                        }
-                    }
-                }
+                    return shardId;
+                });
             }
-        //}
+        }
     }
 
     /**
