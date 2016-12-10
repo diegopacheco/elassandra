@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.cassandra.config.CFMetaData;
-import org.apache.cassandra.config.ColumnDefinition;
 import org.apache.lucene.index.FieldInfo;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.util.BytesRef;
@@ -212,6 +211,11 @@ public class FieldsVisitor extends StoredFieldVisitor {
     
     public FieldsVisitor source(byte[] _source) {
         source = new BytesArray(_source);
+        return this;
+    }
+    
+    public FieldsVisitor source(BytesReference _source) {
+        source = _source;
         return this;
     }
 
