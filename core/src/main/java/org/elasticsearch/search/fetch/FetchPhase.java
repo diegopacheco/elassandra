@@ -468,7 +468,7 @@ public class FetchPhase implements SearchPhase {
                             }
                         }
                         if (fieldVisitor.loadSource()) {
-                            fieldVisitor.source( clusterService.source(searchContext.mapperService().documentMapper(fieldVisitor.uid().type()), mapObject, searchContext.request().index(), fieldVisitor.uid()).array() );
+                            fieldVisitor.source( clusterService.source(searchContext.mapperService().documentMapper(fieldVisitor.uid().type()), mapObject, searchContext.request().index(), fieldVisitor.uid()) );
                         }
                     }
                 } else {
