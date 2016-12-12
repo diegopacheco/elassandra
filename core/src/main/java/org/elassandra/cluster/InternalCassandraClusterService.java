@@ -130,7 +130,7 @@ import org.elassandra.cluster.routing.PrimaryFirstSearchStrategy;
 import org.elassandra.index.ExtendedElasticSecondaryIndex;
 import org.elassandra.index.mapper.internal.NodeFieldMapper;
 import org.elassandra.index.mapper.internal.TokenFieldMapper;
-import org.elassandra.shard.CassandraShardStateObserver;
+import org.elassandra.shard.CassandraShardStartedBarrier;
 import org.elasticsearch.ElasticsearchTimeoutException;
 import org.elasticsearch.Version;
 import org.elasticsearch.action.ActionListener;
@@ -325,7 +325,7 @@ public class InternalCassandraClusterService extends InternalClusterService {
     private final String insertMetadataQuery;
     private final String updateMetaDataQuery;
     
-    private CassandraShardStateObserver shardStateObserver = null;
+    private CassandraShardStartedBarrier shardStateObserver = null;
     
     @Inject
     public InternalCassandraClusterService(Settings settings, DiscoveryService discoveryService, OperationRouting operationRouting, 

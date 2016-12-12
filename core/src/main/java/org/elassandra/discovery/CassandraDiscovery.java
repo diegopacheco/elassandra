@@ -165,6 +165,7 @@ public class CassandraDiscovery extends AbstractLifecycleComponent<Discovery> im
         synchronized (clusterGroup) {
             logger.debug("Connected to cluster [{}]", clusterName.value());
             // initialize cluster from cassandra system.peers 
+            // WARNING: system.peers may be incomplete because commitlogs not yet applied
             for (UntypedResultSet.Row row : executeInternal("SELECT peer, data_center, rack, rpc_address, host_id from system." + SystemKeyspace.PEERS)) {
                 InetAddress peer = row.getInetAddress("peer");
                 InetAddress rpc_address = row.getInetAddress("rpc_address");
@@ -184,7 +185,7 @@ public class CassandraDiscovery extends AbstractLifecycleComponent<Discovery> im
                         dn.status((endpointState.isAlive()) ? DiscoveryNodeStatus.ALIVE : DiscoveryNodeStatus.DEAD);
                     }
                     clusterGroup.put(dn.getId(), dn);
-                    logger.debug("remanent node internal_ip={} host_id={} node_name={} ", NetworkAddress.format(peer), dn.getId(), dn.getName());
+                    logger.debug("  node internal_ip={} host_id={} node_name={} ", NetworkAddress.format(peer), dn.getId(), dn.getName());
                 }
             }
 

@@ -63,6 +63,7 @@ import org.elassandra.cluster.routing.AbstractSearchStrategy.Router;
 import org.elassandra.cluster.routing.PrimaryFirstSearchStrategy.PrimaryFirstRouter;
 import org.elassandra.gateway.CassandraGatewayService;
 import org.elassandra.indices.CassandraSecondaryIndicesListener;
+import org.elassandra.shard.CassandraShardStartedBarrier;
 import org.elassandra.shard.CassandraShardStateListener;
 import org.elasticsearch.Version;
 import org.elasticsearch.action.ActionWriteResponse.ShardInfo;
@@ -171,11 +172,13 @@ public class InternalClusterService extends AbstractLifecycleComponent<ClusterSe
             lastClusterStateListeners);
 
     private final LocalNodeMasterListeners localNodeMasterListeners;
-
+    
     private final Queue<NotifyTimeout> onGoingTimeouts = ConcurrentCollections.newQueue();
 
     private volatile ClusterState clusterState;
-
+    
+    private volatile CassandraShardStartedBarrier shardStartedBarrier;
+    
     private final ClusterBlocks.Builder initialBlocks;
 
     private final TaskManager taskManager;
@@ -309,6 +312,23 @@ public class InternalClusterService extends AbstractLifecycleComponent<ClusterSe
         clusterStateListeners.add(listener);
     }
 
+    @Override
+    public void addShardStartedBarrier() {
+        this.shardStartedBarrier = new CassandraShardStartedBarrier(this);
+    }
+    
+    @Override
+    public void removeShardStartedBarrier() {
+        this.shardStartedBarrier = null;
+    }
+    @Override
+    public void blockUntilShardsStarted() {
+        if (shardStartedBarrier != null) {
+            shardStartedBarrier.blockUntilShardsStarted();
+        }
+    }
+    
+    
     @Override
     public void remove(ClusterStateListener listener) {
         clusterStateListeners.remove(listener);
@@ -716,7 +736,13 @@ public class InternalClusterService extends AbstractLifecycleComponent<ClusterSe
             }
             
             newClusterState.status(ClusterState.ClusterStateStatus.APPLIED);
-            // 
+            
+            // update cluster state routing table
+            // TODO: update the routing table only for updated indices.
+            RoutingTable newRoutingTable = RoutingTable.build(this, newClusterState);
+            clusterState = ClusterState.builder(newClusterState).routingTable(newRoutingTable).build().status(ClusterState.ClusterStateStatus.APPLIED);
+
+            // notify 2i with the new cluster state, including new local started shard.
             if (logger.isTraceEnabled())
                 logger.trace("postAppliedListeners={}",postAppliedListeners);
             for (ClusterStateListener listener : postAppliedListeners) {
@@ -727,11 +753,7 @@ public class InternalClusterService extends AbstractLifecycleComponent<ClusterSe
                 }
             }
             
-            // update cluster state routing table
-            // TODO: update the routing table only for updated indices.
-            RoutingTable newRoutingTable = RoutingTable.build(this, newClusterState);
-            clusterState = ClusterState.builder(newClusterState).routingTable(newRoutingTable).build().status(ClusterState.ClusterStateStatus.APPLIED);
-
+            
             //manual ack only from the master at the end of the publish
             for (UpdateTask<T> task : proccessedListeners) {
                 if (task.listener instanceof AckedClusterStateTaskListener) {
@@ -750,6 +772,10 @@ public class InternalClusterService extends AbstractLifecycleComponent<ClusterSe
 
             executor.clusterStatePublished(newClusterState);
 
+            if (this.shardStartedBarrier != null) {
+                shardStartedBarrier.isReadyToIndex(newClusterState);
+            }
+            
             TimeValue executionTime = TimeValue.timeValueMillis(Math.max(0, TimeValue.nsecToMSec(System.nanoTime() - startTimeNS)));
             logger.debug("processing [{}]: took {} done applying updated cluster_state (version: {}, uuid: {})", source, executionTime, newClusterState.version(), newClusterState.stateUUID());
             warnAboutSlowTaskIfNeeded(executionTime, source);

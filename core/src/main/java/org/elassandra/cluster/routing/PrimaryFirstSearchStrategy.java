@@ -15,28 +15,20 @@
 package org.elassandra.cluster.routing;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.cassandra.dht.Murmur3Partitioner.LongToken;
-import org.apache.cassandra.gms.Gossiper;
 import org.apache.cassandra.dht.Range;
 import org.apache.cassandra.dht.Token;
 import org.apache.cassandra.service.StorageService;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.cluster.routing.ShardRoutingState;
-import org.elasticsearch.common.Nullable;
-import org.elasticsearch.common.transport.TransportAddress;
 
 import com.carrotsearch.hppc.cursors.ObjectCursor;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * return primary ranges of all nodes (and some replica for unreachable nodes).
@@ -55,8 +47,17 @@ public class PrimaryFirstSearchStrategy extends AbstractSearchStrategy {
         public PrimaryFirstRouter(final String index, final String ksName, final Map<UUID, ShardRoutingState> shardStates, final ClusterState clusterState) {
             super(index, ksName, shardStates, clusterState);
             
-            Map<UUID, InetAddress> hostIdToEndpoints = StorageService.instance.getUuidToEndpoint();
+            if (!StorageService.instance.isJoined()) {
+                // temporary fake routing table in order to start local shards before cassandra services.
+                Range<Token> ring = new Range<Token>(new LongToken(Long.MIN_VALUE), new LongToken(Long.MAX_VALUE));
+                this.tokens.add(ring);
+                BitSet singletonBitSet = new BitSet(1);
+                singletonBitSet.set(0, true);
+                this.greenShards.put(localNode, singletonBitSet);
+                return;
+            }
             
+            Map<UUID, InetAddress> hostIdToEndpoints = StorageService.instance.getUuidToEndpoint();
             for(ObjectCursor<DiscoveryNode> entry : clusterState.nodes().getDataNodes().values()) {
                 DiscoveryNode node = entry.value;
                 InetAddress endpoint  = hostIdToEndpoints.get(node.uuid());

@@ -37,6 +37,7 @@ import org.elassandra.NoPersistedMetaDataException;
 import org.elassandra.cluster.routing.AbstractSearchStrategy;
 import org.elassandra.cluster.routing.AbstractSearchStrategy.Router;
 import org.elassandra.cluster.routing.PrimaryFirstSearchStrategy.PrimaryFirstRouter;
+import org.elassandra.shard.CassandraShardStartedBarrier;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.Version;
 import org.elasticsearch.action.ActionWriteResponse.ShardInfo;
@@ -762,5 +763,23 @@ public class TestClusterService implements ClusterService {
             throws JsonParseException, JsonMappingException, IOException {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void addShardStartedBarrier() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeShardStartedBarrier() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void blockUntilShardsStarted() {
+        // TODO Auto-generated method stub
+        
     }
 }

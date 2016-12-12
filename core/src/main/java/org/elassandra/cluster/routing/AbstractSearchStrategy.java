@@ -86,7 +86,7 @@ public abstract class AbstractSearchStrategy {
             this.shardStates = shardStates;
             this.rangeToEndpointsMap = StorageService.instance.getRangeToAddressMapInLocalDC(ksName);
             if (logger.isTraceEnabled())
-                logger.trace("rangeToEndpointsMap={}", this.rangeToEndpointsMap);
+                logger.trace("rangeToEndpointsMap={} clusterState={}", this.rangeToEndpointsMap, clusterState);
             
             Range<Token> wrappedAround = null;        
             for(Range<Token> rt : rangeToEndpointsMap.keySet()) {
@@ -113,8 +113,8 @@ public abstract class AbstractSearchStrategy {
                     UUID uuid = StorageService.instance.getHostId(endpoint);
                     assert uuid != null;
                     DiscoveryNode node = clusterState.nodes().get( uuid.toString() );
-                    assert node != null;
-                    if (ShardRoutingState.STARTED.equals(shardStates.get(uuid))) {
+                    //assert node != null : "Cannot find node with id = " + uuid + " in cluster state";
+                    if (node != null && ShardRoutingState.STARTED.equals(shardStates.get(uuid))) {
                         orphanRange = false;
                         BitSet bs = greenShards.get(node);
                         if (bs == null) {
@@ -132,13 +132,14 @@ public abstract class AbstractSearchStrategy {
                         UUID uuid = StorageService.instance.getHostId(endpoint);
                         assert uuid != null;
                         DiscoveryNode node = clusterState.nodes().get(uuid.toString());
-                        assert node != null;
-                        BitSet bs = redShards.get(node);
-                        if (bs == null) {
-                            bs = new BitSet(tokens.size());
-                            redShards.put(node, bs);
+                        if (node != null) {
+                            BitSet bs = redShards.get(node);
+                            if (bs == null) {
+                                bs = new BitSet(tokens.size());
+                                redShards.put(node, bs);
+                            }
+                            bs.set(i);
                         }
-                        bs.set(i);
                     }
                 }
                 i++;

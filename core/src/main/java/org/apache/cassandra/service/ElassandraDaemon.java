@@ -23,7 +23,7 @@ import org.elassandra.NoPersistedMetaDataException;
 import org.elassandra.cluster.InternalCassandraClusterService;
 import org.elassandra.discovery.CassandraDiscovery;
 import org.elassandra.index.BaseElasticSecondaryIndex;
-import org.elassandra.shard.CassandraShardStateObserver;
+import org.elassandra.shard.CassandraShardStartedBarrier;
 import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.Version;
 import org.elasticsearch.bootstrap.Bootstrap;
@@ -76,6 +76,7 @@ public class ElassandraDaemon extends CassandraDaemon {
     private Settings settings;
     private Environment env;
     private boolean boostraped = false;
+    private MetaData systemMetadata = null;
     
     static {
         try {
@@ -134,17 +135,18 @@ public class ElassandraDaemon extends CassandraDaemon {
         }
     }
 
+    /**
+     * Start Node if metadata available.
+     */
     @Override
     public void systemKeyspaceInitialized() {
         try {
+            systemMetadata = node.clusterService().readMetaDataAsComment();
             if (node != null) {
-                MetaData metadata = node.clusterService().readMetaDataAsComment();
-                if (metadata != null) {
+                if (systemMetadata != null) {
                     logger.debug("Starting Elasticsearch shards before open user keyspaces...");
-                    CassandraShardStateObserver observer = new CassandraShardStateObserver(node.injector().getInstance(IndicesLifecycle.class), metadata.concreteAllOpenIndices());
+                    node.clusterService().addShardStartedBarrier();
                     node.activate();
-                    // check metadata not empty and block until all primary local shards are STARTED
-                    observer.waitLocalShardsStarted();
                 }
             }
         } catch(NoPersistedMetaDataException e) {
@@ -153,6 +155,22 @@ public class ElassandraDaemon extends CassandraDaemon {
             logger.warn("Unexpected error",e);
         }
         
+    }
+    
+    /**
+     * Checks that local shards are started and indexed with 2i if clusterState have opened indices.
+     */
+    @Override
+    public void beforeRecoverCommitLogs() {
+        if (systemMetadata != null) {
+            try {
+                node.clusterService().blockUntilShardsStarted();
+            } catch(NoPersistedMetaDataException e) {
+                logger.debug("Start Elasticsearch later, no mapping available");
+            } catch(Throwable e) {
+                logger.warn("Unexpected error",e);
+            }
+        }
     }
     
     @Override

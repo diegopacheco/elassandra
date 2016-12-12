@@ -225,7 +225,7 @@ public class CassandraDaemon
                 ColumnFamilyStore.removeUnfinishedCompactionLeftovers(cfm, unfinishedCompactions.get(kscf));
         }
         SystemKeyspace.discardCompactionsInProgress();
-
+        
         // Elassandra hook.
         systemKeyspaceInitialized();
         
@@ -257,7 +257,7 @@ public class CassandraDaemon
             }
         }
 
-
+        userKeyspaceInitialized();
        
         
         try
@@ -279,6 +279,9 @@ public class CassandraDaemon
             JVMStabilityInspector.inspectThrowable(t);
             logger.warn("Unable to start GCInspector (currently only supported on the Sun JVM)");
         }
+        
+        // Elassandra hook.
+        beforeRecoverCommitLogs();
         
         // replay the log if necessary
         try
@@ -338,8 +341,6 @@ public class CassandraDaemon
         if (!FBUtilities.getBroadcastAddress().equals(InetAddress.getLoopbackAddress()))
             waitForGossipToSettle();
 
-        userKeyspaceInitialized();
-        
         // schedule periodic background compaction task submission. this is simply a backstop against compactions stalling
         // due to scheduling errors or race conditions
         ScheduledExecutors.optionalTasks.scheduleWithFixedDelay(ColumnFamilyStore.getBackgroundCompactionTaskSubmitter(), 5, 1, TimeUnit.MINUTES);
@@ -587,23 +588,15 @@ public class CassandraDaemon
         }
     }
 
-    
-    /**
-     * This is a hook for concrete daemons to initialize themselves suitably.
-     * Subclasses should override this to initialize when system keyspace is ready.
-     * (called once from CassandraDaemon2.setup()).
-     */
     public void systemKeyspaceInitialized() {
+    }
+    
+    public void beforeRecoverCommitLogs() {
     }
     
     public void userKeyspaceInitialized() {
     }
 
-    /**
-     * This is a hook for concrete daemons to initialize themselves suitably.
-     * Subclasses should override this to initialize before cassandra bootstrap
-     * (called once from ServiceStorage.joinTokenRing() when boostraping).
-     */
     public void beforeBootstrap() {
     }
     

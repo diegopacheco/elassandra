@@ -842,7 +842,7 @@ public class ExtendedElasticSecondaryIndex extends BaseElasticSecondaryIndex {
             
             if (indices.size() == 0) {
                 if (logger.isTraceEnabled())
-                    logger.warn("no active elasticsearch index for keyspace.table {}.{}",baseCfs.metadata.ksName, baseCfs.name);
+                    logger.warn("no active elasticsearch index for keyspace.table=[{}.{}] state={}",baseCfs.metadata.ksName, baseCfs.name, state);
                 this.fields = null;
                 this.fieldsToRead = null;
                 this.fieldsIsStatic = null;
@@ -1896,7 +1896,7 @@ public class ExtendedElasticSecondaryIndex extends BaseElasticSecondaryIndex {
         }
     }
     
-    
+    // TODO: notify 2i only for udated indices (not all)
     @Override
     public void clusterChanged(ClusterChangedEvent event) {
         boolean updateMapping = false;

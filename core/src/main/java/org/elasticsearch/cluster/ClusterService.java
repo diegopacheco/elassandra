@@ -20,63 +20,32 @@
 package org.elasticsearch.cluster;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.cassandra.cql3.QueryOptions;
-import org.apache.cassandra.cql3.QueryProcessor;
 import org.apache.cassandra.cql3.UntypedResultSet;
-import org.apache.cassandra.cql3.statements.ParsedStatement;
 import org.apache.cassandra.db.ColumnFamily;
 import org.apache.cassandra.db.ConsistencyLevel;
-import org.apache.cassandra.db.marshal.AbstractType;
 import org.apache.cassandra.dht.Range;
 import org.apache.cassandra.dht.Token;
 import org.apache.cassandra.exceptions.ConfigurationException;
 import org.apache.cassandra.exceptions.InvalidRequestException;
 import org.apache.cassandra.exceptions.RequestExecutionException;
 import org.apache.cassandra.exceptions.RequestValidationException;
-import org.apache.cassandra.serializers.AsciiSerializer;
-import org.apache.cassandra.serializers.BooleanSerializer;
-import org.apache.cassandra.serializers.BytesSerializer;
-import org.apache.cassandra.serializers.DecimalSerializer;
-import org.apache.cassandra.serializers.DoubleSerializer;
-import org.apache.cassandra.serializers.EmptySerializer;
-import org.apache.cassandra.serializers.FloatSerializer;
-import org.apache.cassandra.serializers.Int32Serializer;
-import org.apache.cassandra.serializers.IntegerSerializer;
-import org.apache.cassandra.serializers.ListSerializer;
-import org.apache.cassandra.serializers.LongSerializer;
-import org.apache.cassandra.serializers.MapSerializer;
-import org.apache.cassandra.serializers.SetSerializer;
-import org.apache.cassandra.serializers.TimeUUIDSerializer;
-import org.apache.cassandra.serializers.TimestampSerializer;
-import org.apache.cassandra.serializers.TypeSerializer;
-import org.apache.cassandra.serializers.UTF8Serializer;
-import org.apache.cassandra.serializers.UUIDSerializer;
-import org.apache.cassandra.service.ClientState;
-import org.apache.cassandra.service.QueryState;
-import org.apache.cassandra.transport.messages.ResultMessage;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.BytesRef;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.node.ArrayNode;
 import org.elassandra.NoPersistedMetaDataException;
 import org.elassandra.cluster.routing.AbstractSearchStrategy;
 import org.elassandra.cluster.routing.PrimaryFirstSearchStrategy;
+import org.elassandra.shard.CassandraShardStartedBarrier;
 import org.elasticsearch.action.ActionWriteResponse.ShardInfo;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.cluster.block.ClusterBlock;
@@ -91,29 +60,19 @@ import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.SuppressForbidden;
 import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.common.component.LifecycleComponent;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.ToXContent.Params;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.IndexService;
 import org.elasticsearch.index.engine.Engine;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.index.mapper.DocumentMapper;
-import org.elasticsearch.index.mapper.FieldMapper;
-import org.elasticsearch.index.mapper.Mapper;
 import org.elasticsearch.index.mapper.MapperService;
-import org.elasticsearch.index.mapper.MetadataFieldMapper;
 import org.elasticsearch.index.mapper.Uid;
-import org.elasticsearch.index.mapper.geo.GeoPointFieldMapper;
-import org.elasticsearch.index.mapper.object.ObjectMapper;
 import org.elasticsearch.index.percolator.PercolatorQueriesRegistry;
 import org.elasticsearch.indices.IndicesService;
-import org.elasticsearch.percolator.PercolatorService;
 import org.elasticsearch.tasks.TaskManager;
 
 /**
@@ -166,6 +125,12 @@ public interface ClusterService extends LifecycleComponent<ClusterService> {
      * Adds post-applied listener.
      */
     void addPost(ClusterStateListener listener);
+    
+
+    public void addShardStartedBarrier();
+    public void removeShardStartedBarrier();
+    public void blockUntilShardsStarted();
+    
     
     /**
      * Adds a listener for updated cluster states.
