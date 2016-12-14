@@ -1,14 +1,14 @@
 [Unit]
-Description=Elasticsearch
-Documentation=http://www.elastic.co
+Description=Elassandra
+Documentation=http://www.elassandra.io
 Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=ES_HOME=${packaging.elasticsearch.home.dir}
-Environment=CONF_DIR=${packaging.elasticsearch.conf.dir}
-Environment=DATA_DIR=${packaging.elasticsearch.data.dir}
-Environment=LOG_DIR=${packaging.elasticsearch.log.dir}
+Environment=CASSANDRA_HOME=${packaging.elasticsearch.home.dir}
+Environment=CASSANDRA_CONF=${packaging.elasticsearch.conf.dir}
+Environment=CASSANDRA_DATA=${packaging.elasticsearch.data.dir}
+Environment=CASSANDRA_LOGS=${packaging.elasticsearch.log.dir}
 Environment=PID_DIR=${packaging.elasticsearch.pid.dir}
 EnvironmentFile=-${packaging.env.file}
 
@@ -17,14 +17,9 @@ WorkingDirectory=${packaging.elasticsearch.home.dir}
 User=${packaging.elasticsearch.user}
 Group=${packaging.elasticsearch.group}
 
-ExecStartPre=${packaging.elasticsearch.bin.dir}/elasticsearch-systemd-pre-exec
+ExecStartPre=${packaging.elasticsearch.bin.dir}/elassandra-systemd-pre-exec
 
-ExecStart=${packaging.elasticsearch.bin.dir}/elasticsearch \
-                                                -Des.pidfile=${PID_DIR}/elasticsearch.pid \
-                                                -Des.default.path.home=${ES_HOME} \
-                                                -Des.default.path.logs=${LOG_DIR} \
-                                                -Des.default.path.data=${DATA_DIR} \
-                                                -Des.default.path.conf=${CONF_DIR}
+ExecStart=${packaging.elasticsearch.bin.dir}/elassandra
 
 StandardOutput=journal
 StandardError=inherit
