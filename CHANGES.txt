@@ -1,9 +1,11 @@
-2.4.2-1 - 2016-12-08
+2.4.2-1 - 2016-12-13
   * Based on Elasticsearch 2.4.2 + Cassandra 2.2.7
-  * Add support for unit tests.
-  * Manage index and document type containing dash or dot caracters (works with Kibana without any modification).
+  * Add support for Elasticsearch unit tests (2790 unit tests OK).
+  * Manage indexes and documents types containing dash or dot caracters (works with Kibana without any modification).
   * New index settings *drop_on_delete_index* to delete Cassandra keyspace/table when deleting an Elasticsearch index.
   * New index settings *synchrnous_refresh* to refresh Elasticsearch index on each document update.
+  * Improve search performance by removing some lock contention issues.
+  * [WARNING]: RPM & Debian packages not ready to use (please install tarball).
 
 2.1.1-18.1 - 2016-11-02
   * Fix #59 delete-by-query plugin does not work 
