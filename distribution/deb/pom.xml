@@ -229,8 +229,8 @@
                                 </data>
                                 <!-- Adds systemd file -->
                                 <data>
-                                    <src>${project.build.directory}/generated-packaging/deb/systemd/elasticsearch.service</src>
-                                    <dst>${packaging.elasticsearch.systemd.dir}/elasticsearch.service</dst>
+                                    <src>${project.build.directory}/generated-packaging/deb/systemd/cassandra.service</src>
+                                    <dst>${packaging.elasticsearch.systemd.dir}/cassandra.service</dst>
                                     <type>file</type>
                                 </data>
                                 <!-- Adds systemd/sysctl.d configuration file -->
