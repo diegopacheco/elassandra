@@ -121,7 +121,7 @@
                                 <data>
                                     <src>${project.build.directory}/generated-packaging/deb/bin</src>
                                     <type>directory</type>
-                                    <includes>elasticsearch,elasticsearch.in.sh,plugin,elasticsearch-systemd-pre-exec</includes>
+                                    <includes>cassandra,cassandra.in.sh,plugin,elasticsearch-systemd-pre-exec</includes>
                                     <mapper>
                                         <type>perm</type>
                                         <prefix>${packaging.elasticsearch.bin.dir}</prefix>
@@ -170,7 +170,7 @@
                                 </data>
                                 <!-- Add environment vars file -->
                                 <data>
-                                    <src>${project.build.directory}/generated-packaging/deb/env/elasticsearch</src>
+                                    <src>${project.build.directory}/generated-packaging/deb/env/cassandra</src>
                                     <type>file</type>
                                     <mapper>
                                         <type>perm</type>
@@ -183,7 +183,7 @@
                                 <!-- Add libs -->
                                 <data>
                                     <src>${project.build.directory}/</src>
-                                    <includes>elasticsearch-${project.version}.jar</includes>
+                                    <includes>elassandra-${project.version}.jar</includes>
                                     <type>directory</type>
                                     <mapper>
                                         <type>perm</type>
@@ -235,14 +235,14 @@
                                 </data>
                                 <!-- Adds systemd/sysctl.d configuration file -->
                                 <data>
-                                    <src>${project.build.directory}/generated-packaging/deb/systemd/sysctl/elasticsearch.conf</src>
-                                    <dst>${packaging.elasticsearch.systemd.sysctl.dir}/elasticsearch.conf</dst>
+                                    <src>${project.build.directory}/generated-packaging/deb/systemd/sysctl/cassandra.conf</src>
+                                    <dst>${packaging.elasticsearch.systemd.sysctl.dir}/cassandra.conf</dst>
                                     <type>file</type>
                                 </data>
                                 <!-- Adds systemd/tmpfiles.d configuration file -->
                                 <data>
-                                    <src>${project.build.directory}/generated-packaging/deb/systemd/elasticsearch.conf</src>
-                                    <dst>${packaging.elasticsearch.tmpfilesd.dir}/elasticsearch.conf</dst>
+                                    <src>${project.build.directory}/generated-packaging/deb/systemd/cassandra.conf</src>
+                                    <dst>${packaging.elasticsearch.tmpfilesd.dir}/cassandra.conf</dst>
                                     <type>file</type>
                                 </data>
                                 <!-- Add lintian files  -->
